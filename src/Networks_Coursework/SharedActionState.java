@@ -1,18 +1,19 @@
 package Networks_Coursework;
-import java.net.*;
-import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class SharedActionState{
 	
 	private SharedActionState mySharedObj;
 	private String myThreadName;
-	private double mySharedVariable;
+	private double [] mySharedVariable;
 	private boolean accessing=false; // true a thread has a lock, false otherwise
 	private int threadsWaiting=0; // number of waiting writers
 
 // Constructor	
 	
-	SharedActionState(double SharedVariable) {
+	SharedActionState(double [] SharedVariable) {
 		mySharedVariable = SharedVariable;
 	}
 
@@ -50,66 +51,85 @@ public class SharedActionState{
     		System.out.println(myThreadName + " received "+ theInput);
     		String theOutput = null;
     		// Check what the client said
-    		if (theInput.equalsIgnoreCase("Do my action!")) {
+    		if (theInput.contains("Add_Money")) {
+				System.out.println("Add_Money request received");
+				StringBuilder amountPart = new StringBuilder();
+				char[] charArray = theInput.toCharArray();
+				try {
+					for (char c : charArray) {
+						if (Character.isDigit(c) || c == '.' || c == '-') {
+							amountPart.append(c);
+							System.out.println("Amount: " + amountPart.toString());
+						}
+					}
+					
+				} 
+				catch (Exception e) {
+					theOutput = "Error: " + e;
+					e.printStackTrace();
+				}
+				System.out.println("Amount: " + amountPart.toString());
+				String amountString = amountPart.toString();
+				Double amount = Double.valueOf(amountString);
+				System.out.println("aaaaaa: " + amount);
+				
+
+				System.out.println("Match");
+				// Extract Client and Amount
+				Integer Client = null;
+				if (theInput.contains("ClientA")){
+					Client = 0;
+				}
+				else if (theInput.contains("ClientB")){
+					Client = 1;					}
+				else if (theInput.contains("ClientB")){
+					Client = 2;
+				}
+				else {
+					System.out.println("Error - client not recognised.");
+					}
+				// Add the amount to the client's account
+				mySharedVariable[Client] = mySharedVariable[Client] + amount;
+				theOutput = "Your new account amount is: " + mySharedVariable[Client];
+			}
+			else if (theInput.contains("Subtract_Money")) {
+				Pattern pattern = Pattern.compile("Subtract_Money\\(([^,]+),\\s*([0-9.]+)\\)");
     			//Correct request
-    			if (myThreadName.equals("ActionServerThread1")) {
-    				/*  Add 20 to the variable
-    					multiply it by 5
-    					divide by 3.
-    				 */
-    				mySharedVariable = mySharedVariable + 20;
-       				mySharedVariable = mySharedVariable * 5;
-       				mySharedVariable = mySharedVariable / 3;
-   				System.out.println(myThreadName + " made the SharedVariable " + mySharedVariable);
-    				theOutput = "Do action completed.  Shared Variable now = " + mySharedVariable;
-    			}
-    			else if (myThreadName.equals("ActionServerThread2")) {
-    				/*	Subtract 5 from the variable
-    					Multiply it by 10 
-    					Divide by 2.5
-    					*/
-       				mySharedVariable = mySharedVariable - 5;
-       				mySharedVariable = mySharedVariable * 10;
-       				mySharedVariable = mySharedVariable / 2.5;
-    					
-    				System.out.println(myThreadName + " made the SharedVariable " + mySharedVariable);
-    				theOutput = "Do action completed.  Shared Variable now = " + mySharedVariable;
+				Matcher matcher = pattern.matcher(theInput);
 
-    			}
-       			else if (myThreadName.equals("ActionServerThread3")) {
-       				/*	Subtract 50
-						Divide by 2
-						Multiply by 33
-       				 */
-       				mySharedVariable = mySharedVariable - 50;
-       				mySharedVariable = mySharedVariable / 2;
-       				mySharedVariable = mySharedVariable * 33;
- 
-       				System.out.println(myThreadName + " made the SharedVariable " + mySharedVariable);
-    				theOutput = "Do action completed.  Shared Variable now = " + mySharedVariable;
+				if (matcher.find()) {
+					// Extract Client and Amount
+					Integer Client = null;
+					String clientInput = matcher.group(1).trim();
+					double amount = Double.parseDouble(matcher.group(2).trim());
 
-       			}
-       			else if (myThreadName.equals("ActionServerThread4")) {
-    				/*	Multiply by 20
-						Divide by 10
-						Subtract 1
-    				 */
-       				mySharedVariable = mySharedVariable * 20;
-       				mySharedVariable = mySharedVariable / 10;
-       				mySharedVariable = mySharedVariable - 1;
-    				System.out.println(myThreadName + " made the SharedVariable " + mySharedVariable);
-    				theOutput = "Do action completed.  Shared Variable now = " + mySharedVariable;
-       			}
-       			else {System.out.println("Error - thread call not recognised.");}
-    		}
+					if (clientInput == "ClientA"){
+						Client = 0;
+					}
+					else if (clientInput == "ClientB"){
+						Client = 1;
+					}
+					else if (clientInput == "ClientC"){
+						Client = 2;
+					}
+					else {
+						System.out.println("Error - client not recognised.");
+					}
+
+					// Subtract the amount from the client's account
+					mySharedVariable[Client] = mySharedVariable[Client] - amount;
+					theOutput = "Your new account amount is: " + mySharedVariable[Client];
+			}
     		else { //incorrect request
-    			theOutput = myThreadName + " received incorrect request - only understand \"Do my action!\"";
+    			theOutput = "Unfortunately this command is not recognised, please try again.";
 		
     		}
  
      		//Return the output message to the ActionServer
     		System.out.println(theOutput);
     		return theOutput;
-    	}	
+    	}
+		return theOutput;
+	}
 }
 

@@ -1,7 +1,7 @@
 package Networks_Coursework;
 
-import java.net.*;
 import java.io.*;
+import java.net.*;
 
 
 public class ActionServerThread extends Thread {
