@@ -166,10 +166,10 @@ public class SharedActionState{
 			if (account1.contains("ClientA")){
 				ClientFrom = 0;
 			}
-			else if (theInput.contains("ClientB")){
+			else if (account1.contains("ClientB")){
 				ClientFrom = 1;			
 			}
-			else if (theInput.contains("ClientC")){
+			else if (account1.contains("ClientC")){
 				ClientFrom = 2;
 			}
 			else {
@@ -177,13 +177,13 @@ public class SharedActionState{
 				}
 
 				Integer ClientTo = null;
-			if (account1.contains("ClientA")){
+			if (account2.contains("ClientA")){
 				ClientTo = 0;
 			}
-			else if (theInput.contains("ClientB")){
+			else if (account2.contains("ClientB")){
 				ClientTo = 1;			
 			}
-			else if (theInput.contains("ClientC")){
+			else if (account2.contains("ClientC")){
 				ClientTo = 2;
 			}
 			else {

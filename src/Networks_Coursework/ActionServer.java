@@ -30,13 +30,12 @@ public class ActionServer {
     }
     System.out.println(ActionServerName + " started");
 
-    //Got to do this in the correct order with only four clients!  Can automate this...
+    int threadCounter = 0;
     
     while (listening){
-      new ActionServerThread(ActionServerSocket.accept(), "ActionServerThread1", ourSharedActionStateObject).start();
-      new ActionServerThread(ActionServerSocket.accept(), "ActionServerThread2", ourSharedActionStateObject).start();
-      new ActionServerThread(ActionServerSocket.accept(), "ActionServerThread3", ourSharedActionStateObject).start();
-      System.out.println("New " + ActionServerName + " thread started.");
+      String threadName = "ActionServerThread" + threadCounter++;
+      new ActionServerThread(ActionServerSocket.accept(), threadName, ourSharedActionStateObject).start();
+      System.out.println("New " + ActionServerName + " thread started: " + threadName);
     }
     ActionServerSocket.close();
   }

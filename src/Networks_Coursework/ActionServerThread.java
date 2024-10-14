@@ -10,7 +10,6 @@ public class ActionServerThread extends Thread {
   private Socket actionSocket = null;
   private SharedActionState mySharedActionStateObject;
   private String myActionServerThreadName;
-  private double mySharedVariable;
    
   //Setup the thread
   	public ActionServerThread(Socket actionSocket, String ActionServerThreadName, SharedActionState SharedObject) {
