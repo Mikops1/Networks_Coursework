@@ -1,6 +1,4 @@
 package Networks_Coursework;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class SharedActionState{
@@ -93,42 +91,93 @@ public class SharedActionState{
 				theOutput = "Your new account amount is: " + mySharedVariable[Client];
 			}
 			else if (theInput.contains("Subtract_Money")) {
-				Pattern pattern = Pattern.compile("Subtract_Money\\(([^,]+),\\s*([0-9.]+)\\)");
-    			//Correct request
-				Matcher matcher = pattern.matcher(theInput);
+				System.out.println("Subtract_Money request received");
+				StringBuilder amountPart = new StringBuilder();
+				char[] charArray = theInput.toCharArray();
+				try {
+					for (char c : charArray) {
+						if (Character.isDigit(c) || c == '.' || c == '-') {
+							amountPart.append(c);
+							System.out.println("Amount: " + amountPart.toString());
+						}
+					}
+				} 
+				catch (Exception e) {
+					theOutput = "Error: " + e;
+					e.printStackTrace();
+				}
+				System.out.println("Amount: " + amountPart.toString());
+				String amountString = amountPart.toString();
+				Double amount = Double.valueOf(amountString);
+				System.out.println("aaaaaa: " + amount);
+				
 
-				if (matcher.find()) {
-					// Extract Client and Amount
-					Integer Client = null;
-					String clientInput = matcher.group(1).trim();
-					double amount = Double.parseDouble(matcher.group(2).trim());
-
-					if (clientInput == "ClientA"){
-						Client = 0;
+				System.out.println("Match");
+				// Extract Client and Amount
+				Integer Client = null;
+				if (theInput.contains("ClientA")){
+					Client = 0;
+				}
+				else if (theInput.contains("ClientB")){
+					Client = 1;					
+				}
+				else if (theInput.contains("ClientB")){
+					Client = 2;
+				}
+				else {
+					System.out.println("Error - client not recognised.");
 					}
-					else if (clientInput == "ClientB"){
-						Client = 1;
-					}
-					else if (clientInput == "ClientC"){
-						Client = 2;
-					}
-					else {
-						System.out.println("Error - client not recognised.");
-					}
-
-					// Subtract the amount from the client's account
-					mySharedVariable[Client] = mySharedVariable[Client] - amount;
-					theOutput = "Your new account amount is: " + mySharedVariable[Client];
-			}
-    		else { //incorrect request
-    			theOutput = "Unfortunately this command is not recognised, please try again.";
-		
-    		}
- 
+				// Add the amount to the client's account
+				mySharedVariable[Client] = mySharedVariable[Client] - amount;
+				theOutput = "Your new account amount is: " + mySharedVariable[Client];
      		//Return the output message to the ActionServer
     		System.out.println(theOutput);
     		return theOutput;
     	}
+		else if (theInput.contains("Subtract_Money")) {
+			System.out.println("Subtract_Money request received");
+			StringBuilder amountPart = new StringBuilder();
+			char[] charArray = theInput.toCharArray();
+			try {
+				for (char c : charArray) {
+					if (Character.isDigit(c) || c == '.' || c == '-') {
+						amountPart.append(c);
+						System.out.println("Amount: " + amountPart.toString());
+					}
+				}
+			} 
+			catch (Exception e) {
+				theOutput = "Error: " + e;
+				e.printStackTrace();
+			}
+			System.out.println("Amount: " + amountPart.toString());
+			String amountString = amountPart.toString();
+			Double amount = Double.valueOf(amountString);
+			System.out.println("aaaaaa: " + amount);
+			
+
+			System.out.println("Match");
+			// Extract Client and Amount
+			Integer Client = null;
+			if (theInput.contains("ClientA")){
+				Client = 0;
+			}
+			else if (theInput.contains("ClientB")){
+				Client = 1;					
+			}
+			else if (theInput.contains("ClientB")){
+				Client = 2;
+			}
+			else {
+				System.out.println("Error - client not recognised.");
+				}
+			// Add the amount to the client's account
+			mySharedVariable[Client] = mySharedVariable[Client] - amount;
+			theOutput = "Your new account amount is: " + mySharedVariable[Client];
+		 //Return the output message to the ActionServer
+		System.out.println(theOutput);
+		return theOutput;
+		}
 		return theOutput;
 	}
 }
