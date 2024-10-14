@@ -1,5 +1,6 @@
 package Networks_Coursework;
 
+import java.util.ArrayList;
 
 public class SharedActionState{
 	
@@ -71,7 +72,6 @@ public class SharedActionState{
 				Double amount = Double.valueOf(amountString);
 				System.out.println("aaaaaa: " + amount);
 				
-
 				System.out.println("Match");
 				// Extract Client and Amount
 				Integer Client = null;
@@ -80,7 +80,7 @@ public class SharedActionState{
 				}
 				else if (theInput.contains("ClientB")){
 					Client = 1;					}
-				else if (theInput.contains("ClientB")){
+				else if (theInput.contains("ClientC")){
 					Client = 2;
 				}
 				else {
@@ -121,7 +121,7 @@ public class SharedActionState{
 				else if (theInput.contains("ClientB")){
 					Client = 1;					
 				}
-				else if (theInput.contains("ClientB")){
+				else if (theInput.contains("ClientC")){
 					Client = 2;
 				}
 				else {
@@ -134,8 +134,8 @@ public class SharedActionState{
     		System.out.println(theOutput);
     		return theOutput;
     	}
-		else if (theInput.contains("Subtract_Money")) {
-			System.out.println("Subtract_Money request received");
+		else if (theInput.contains("Transfer_Money")) {
+			System.out.println("Transfer_Money request received");
 			StringBuilder amountPart = new StringBuilder();
 			char[] charArray = theInput.toCharArray();
 			try {
@@ -154,26 +154,45 @@ public class SharedActionState{
 			String amountString = amountPart.toString();
 			Double amount = Double.valueOf(amountString);
 			System.out.println("aaaaaa: " + amount);
-			
 
-			System.out.println("Match");
+			String[] parts = theInput.split("[(),]");
+			String account1 = parts[1];
+			String account2 = parts[2];
+
+
+
 			// Extract Client and Amount
-			Integer Client = null;
-			if (theInput.contains("ClientA")){
-				Client = 0;
+			Integer ClientFrom = null;
+			if (account1.contains("ClientA")){
+				ClientFrom = 0;
 			}
 			else if (theInput.contains("ClientB")){
-				Client = 1;					
+				ClientFrom = 1;			
+			}
+			else if (theInput.contains("ClientC")){
+				ClientFrom = 2;
+			}
+			else {
+				System.out.println("Error - client not recognised.");
+				}
+
+				Integer ClientTo = null;
+			if (account1.contains("ClientA")){
+				ClientTo = 0;
 			}
 			else if (theInput.contains("ClientB")){
-				Client = 2;
+				ClientTo = 1;			
+			}
+			else if (theInput.contains("ClientC")){
+				ClientTo = 2;
 			}
 			else {
 				System.out.println("Error - client not recognised.");
 				}
 			// Add the amount to the client's account
-			mySharedVariable[Client] = mySharedVariable[Client] - amount;
-			theOutput = "Your new account amount is: " + mySharedVariable[Client];
+			mySharedVariable[ClientFrom] = mySharedVariable[ClientFrom] - amount;
+			mySharedVariable[ClientTo] = mySharedVariable[ClientTo] + amount;
+			theOutput = "You have transferred " + amount + " from " + account1 + " to " + account2;
 		 //Return the output message to the ActionServer
 		System.out.println(theOutput);
 		return theOutput;

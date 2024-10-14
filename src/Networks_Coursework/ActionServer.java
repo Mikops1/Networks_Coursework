@@ -20,7 +20,7 @@ public class ActionServer {
     
     SharedActionState ourSharedActionStateObject = new SharedActionState(ClientAccounts);
         
-    // Make the server socket
+    // Make the server socketS
 
     try {
       ActionServerSocket = new ServerSocket(ActionServerNumber);
